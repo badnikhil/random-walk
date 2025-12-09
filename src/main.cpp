@@ -18,23 +18,30 @@ typedef struct{
 sf::Vector2f getRandVel(){
     int randOption =  rand() % (4);
     switch(randOption){
-        case 0:return sf::Vector2f(0,-10);
-        case 1:return sf::Vector2f(-10,0);
-        case 2:return sf::Vector2f(0,10);
-        case 3:return sf::Vector2f(10,0);
+        case 0:return sf::Vector2f(0,-1);
+        case 1:return sf::Vector2f(-1,0);
+        case 2:return sf::Vector2f(0,1);
+        case 3:return sf::Vector2f(1,0);
     }
     return sf::Vector2f(-1,0);
 
 }
 void InitAgents(sf::RectangleShape agents[],int num){
     for(int i = 0 ; i < num ; i++){
-        agents[i] = sf::RectangleShape(sf::Vector2f(10,10));
+        agents[i] = sf::RectangleShape(sf::Vector2f(1,1));
         agents[i].setPosition(HEIGHT / 2 , WIDTH / 2);
-        agents[i].setFillColor(sf::Color::Green);
+        int r = rand() / 256;
+        int g = rand() / 256;
+        int b = rand() / 256;
+        agents[i].setFillColor(sf::Color(r,g,b,255));
     }
 }
-void moveAgent(sf::RectangleShape *agent){    
-    agent->move(getRandVel());
+void moveAgent(sf::RectangleShape *agent , sf::RenderWindow *win){    
+    sf::Vector2f dir = getRandVel();
+    for(int i = 0 ; i < 10 ; i++){
+        agent->move(dir);
+        win->draw(*agent);
+    }
 }
 int main(int argc , char* argv[]){
     int num_agents = 5;
@@ -42,14 +49,12 @@ int main(int argc , char* argv[]){
         printf("Usage is ./RandomWalk {no of agents as integer} \nDefaulting no of Agents to 5");
     }
     else num_agents = std::atoi(argv[1]);
-
+    
     sf::RenderWindow window(sf::VideoMode(HEIGHT , WIDTH), "Random Walk");
+    window.setFramerateLimit(60);
     srand(time(NULL));
     sf::RectangleShape agents[num_agents];
     InitAgents(agents , num_agents);
-    sf::RectangleShape agent(sf::Vector2f(10,10));
-    agent.setFillColor(sf::Color::Green);
-    agent.setPosition(HEIGHT / 2 , WIDTH / 2);
     while(window.isOpen()){
         sf::Event event;
         while(window.pollEvent(event)){
@@ -58,12 +63,12 @@ int main(int argc , char* argv[]){
             }
         }        
         for(int i = 0 ; i < num_agents ; i++){
-            moveAgent(&agents[i]);
+            moveAgent(&agents[i],&window);
             window.draw(agents[i]);
         }
         
         window.display();
-       std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    //    std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
 
 }
