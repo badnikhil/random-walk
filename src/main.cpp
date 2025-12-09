@@ -3,6 +3,7 @@
 #include<chrono>
 #include<time.h>
 #include<cstdlib>
+#include <cmath>
 #define HEIGHT 800
 #define WIDTH 600
 
@@ -13,7 +14,32 @@ typedef struct{
     sf::RectangleShape rect;
     Velocity vel;
 }Agent;
+sf::Color HSVtoRGB(float H, float S, float V) {
+    float C = V * S;
+    float X = C * (1 - fabs(fmod(H / 60.0f, 2) - 1));
+    float m = V - C;
 
+    float r, g, b;
+    if (H < 60)      { r = C; g = X; b = 0; }
+    else if (H < 120){ r = X; g = C; b = 0; }
+    else if (H < 180){ r = 0; g = C; b = X; }
+    else if (H < 240){ r = 0; g = X; b = C; }
+    else if (H < 300){ r = X; g = 0; b = C; }
+    else             { r = C; g = 0; b = X; }
+
+    return sf::Color(
+        static_cast<sf::Uint8>((r + m) * 255),
+        static_cast<sf::Uint8>((g + m) * 255),
+        static_cast<sf::Uint8>((b + m) * 255)
+    );
+}
+
+sf::Color getRandomColor() {
+    float H = rand() % 360;     // 0 to 359
+    float S = 0.8f;             // saturation
+    float V = 0.9f;             // brightness
+    return HSVtoRGB(H, S, V);
+}
 
 sf::Vector2f getRandVel(){
     int randOption =  rand() % (4);
@@ -30,13 +56,10 @@ void InitAgents(sf::RectangleShape agents[],int num){
     for(int i = 0 ; i < num ; i++){
         agents[i] = sf::RectangleShape(sf::Vector2f(1,1));
         agents[i].setPosition(HEIGHT / 2 , WIDTH / 2);
-        int r = rand() / 256;
-        int g = rand() / 256;
-        int b = rand() / 256;
-        agents[i].setFillColor(sf::Color(r,g,b,255));
+        agents[i].setFillColor(getRandomColor());
     }
 }
-void moveAgent(sf::RectangleShape *agent , sf::RenderWindow *win){    
+void moveAgent(sf::RectangleShape *agent , sf::RenderWindow *win){
     sf::Vector2f dir = getRandVel();
     for(int i = 0 ; i < 10 ; i++){
         agent->move(dir);
@@ -49,7 +72,6 @@ int main(int argc , char* argv[]){
         printf("Usage is ./RandomWalk {no of agents as integer} \nDefaulting no of Agents to 5");
     }
     else num_agents = std::atoi(argv[1]);
-    
     sf::RenderWindow window(sf::VideoMode(HEIGHT , WIDTH), "Random Walk");
     window.setFramerateLimit(60);
     srand(time(NULL));
@@ -61,14 +83,13 @@ int main(int argc , char* argv[]){
             if(event.type == sf::Event::Closed){
                 window.close();
             }
-        }        
+        }
         for(int i = 0 ; i < num_agents ; i++){
             moveAgent(&agents[i],&window);
             window.draw(agents[i]);
         }
-        
         window.display();
-    //    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+       std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
 
 }
