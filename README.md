@@ -2,12 +2,8 @@
 
 A colorful visualization of random walkers using SFML (Simple and Fast Multimedia Library).
 
+<video src="asset/random-walk.mp4" controls width="800"></video>
 
-
-## Interactive Demo
-
-Try the interactive demo above! You can adjust the number of agents using the slider.
-[![Open in GitHub Pages](https://img.shields.io/badge/View%20Interactive-Demo-blue?style=for-the-badge)](https://badnikhil.github.io/random-walk)
 
 ## Features
 
