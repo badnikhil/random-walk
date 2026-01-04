@@ -1,8 +1,15 @@
+
 # Random Walk Simulation
 
-A colorful visualization of random walkers using SFML (Simple and Fast Multimedia Library).
+A colorful visualization of random walkers using SFML ,C++.
 
-<video src="asset/random-walk.mp4" controls width="800"></video>
+
+
+
+
+https://github.com/user-attachments/assets/6cab4543-5051-4de0-b3db-39fbbfabf1fb
+
+
 
 
 ## Features
